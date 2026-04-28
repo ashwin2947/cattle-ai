@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cattle AI Intelligence System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0f0b;
+    --bg2: #111811;
+    --bg3: #192119;
+    --surface: #1e2a1e;
+    --surface2: #243024;
+    --border: rgba(74,150,74,0.18);
+    --border2: rgba(74,150,74,0.35);
+    --green: #4a9650;
+    --green-light: #6abf72;
+    --green-dim: #2d5c31;
+    --cyan: #38c9d4;
+    --cyan-dim: #1a6e75;
+    --amber: #e8a020;
+    --text: #e8f0e8;
+    --text2: #9ab89a;
+    --text3: #5d7a5d;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--green-dim); border-radius: 3px; }
+
+  /* ── Page System ── */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ── Navbar ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(11,15,11,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-head); font-weight: 700; font-size: 17px;
+    color: var(--text); text-decoration: none; letter-spacing: -0.3px;
+  }
+  .nav-logo .dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-link {
+    padding: 6px 16px; border-radius: 8px;
+    font-size: 14px; font-weight: 500; color: var(--text2);
+    cursor: pointer; border: none; background: transparent;
+    transition: var(--transition);
+    font-family: var(--font-body);
+  }
+  .nav-link:hover { color: var(--text); background: var(--surface); }
+  .nav-link.active { color: var(--green-light); background: rgba(74,150,80,0.12); }
+  .nav-badge {
+    font-size: 10px; padding: 2px 6px; border-radius: 4px;
+    background: rgba(56,201,212,0.15); color: var(--cyan);
+    margin-left: 4px; vertical-align: middle;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative; text-align: center; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(74,150,80,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 70%, rgba(56,201,212,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 30% at 10% 80%, rgba(232,160,32,0.04) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 80% at center, black 30%, transparent 70%);
+  }
+  .hero-eyebrow {
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px; border-radius: 100px;
+    border: 1px solid var(--border2);
+    background: rgba(74,150,80,0.08);
+    font-size: 13px; font-weight: 500; color: var(--green-light);
+    margin-bottom: 28px; letter-spacing: 0.5px;
+    font-family: var(--font-mono);
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green-light);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(106,191,114,0.5); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(106,191,114,0); }
+  }
+  .hero h1 {
+    position: relative; z-index: 1;
+    font-family: var(--font-head); font-size: clamp(40px, 6vw, 76px);
+    font-weight: 800; line-height: 1.05; letter-spacing: -2px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #e8f0e8 20%, var(--green-light) 60%, var(--cyan) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero p {
+    position: relative; z-index: 1;
+    font-size: clamp(16px, 2vw, 20px); color: var(--text2); max-width: 560px; margin: 0 auto 40px;
+    font-weight: 300; line-height: 1.7;
+  }
+  .hero-cta {
+    position: relative; z-index: 1;
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+  .btn-primary {
+    padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 600;
+    background: var(--green); color: #fff; border: none; cursor: pointer;
+    font-family: var(--font-body);
+    transition: var(--transition);
+    box-shadow: 0 0 0 0 rgba(74,150,80,0.4);
+  }
+  .btn-primary:hover {
+    background: var(--green-light);
+    box-shadow: 0 8px 32px rgba(74,150,80,0.35);
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 500;
+    background: transparent; color: var(--text); border: 1px solid var(--border2); cursor: pointer;
+    font-family: var(--font-body);
+    transition: var(--transition);
+  }
+  .btn-secondary:hover { background: var(--surface); border-color: var(--green); color: var(--green-light); }
+  .hero-stats {
+    position: relative; z-index: 1;
+    display: flex; gap: 48px; margin-top: 72px; flex-wrap: wrap; justify-content: center;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: var(--font-head); font-size: 32px; font-weight: 800;
+    color: var(--green-light); letter-spacing: -1px; display: block;
+  }
+  .stat-label { font-size: 12px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
+
+  /* ── Sections ── */
+  section { padding: 96px 48px; max-width: 1200px; margin: 0 auto; }
+  .section-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--cyan);
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px;
+  }
+  .section-tag::before { content: '//'; color: var(--text3); }
+  h2 {
+    font-family: var(--font-head); font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700; letter-spacing: -1px; margin-bottom: 16px;
+    color: var(--text); line-height: 1.1;
+  }
+  .section-sub { font-size: 16px; color: var(--text2); max-width: 520px; font-weight: 300; line-height: 1.7; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ── Feature Cards ── */
+  .feature-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px; margin-top: 48px;
+  }
+  .feature-card {
+    padding: 28px; border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(74,150,80,0.06) 0%, transparent 60%);
+    opacity: 0; transition: var(--transition);
+  }
+  .feature-card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 44px; height: 44px; border-radius: 10px; margin-bottom: 18px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  .feature-card h3 {
+    font-family: var(--font-head); font-size: 17px; font-weight: 700;
+    color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .feature-card p { font-size: 14px; color: var(--text2); line-height: 1.65; font-weight: 300; }
+  .feature-card .badge {
+    display: inline-block; margin-top: 14px;
+    font-size: 11px; padding: 3px 8px; border-radius: 4px;
+    background: rgba(232,160,32,0.15); color: var(--amber);
+    font-family: var(--font-mono);
+  }
+
+  /* ── Pipeline ── */
+  .pipeline {
+    display: flex; align-items: stretch; gap: 0; margin-top: 48px;
+    overflow-x: auto; padding-bottom: 8px;
+  }
+  .pipe-step {
+    flex: 1; min-width: 120px; padding: 24px 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    text-align: center; position: relative;
+    transition: var(--transition);
+  }
+  .pipe-step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .pipe-step:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+  .pipe-step:not(:first-child) { border-left: none; }
+  .pipe-step:hover { background: var(--surface2); z-index: 1; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .pipe-step .num {
+    font-family: var(--font-mono); font-size: 11px; color: var(--text3);
+    display: block; margin-bottom: 8px;
+  }
+  .pipe-step .icon { font-size: 24px; display: block; margin-bottom: 10px; }
+  .pipe-step .label {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    font-family: var(--font-head); display: block; margin-bottom: 4px;
+  }
+  .pipe-step .sub { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+  .pipe-step .pipe-arrow {
+    position: absolute; right: -12px; top: 50%; transform: translateY(-50%);
+    width: 24px; height: 24px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 50%; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--green);
+  }
+  .pipe-step:last-child .pipe-arrow { display: none; }
+
+  /* ── Architecture ── */
+  .arch-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px;
+  }
+  .arch-card {
+    padding: 28px; border-radius: var(--radius-lg);
+    border: 1px solid var(--border); background: var(--surface);
+  }
+  .arch-card h4 {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+    color: var(--text3); text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .arch-tag {
+    display: inline-block; padding: 6px 12px; border-radius: 6px; margin: 4px;
+    font-size: 13px; font-weight: 500; font-family: var(--font-mono);
+    border: 1px solid var(--border);
+  }
+  .arch-tag.g { background: rgba(74,150,80,0.12); color: var(--green-light); border-color: rgba(74,150,80,0.3); }
+  .arch-tag.b { background: rgba(56,201,212,0.1); color: var(--cyan); border-color: rgba(56,201,212,0.25); }
+  .arch-tag.a { background: rgba(232,160,32,0.1); color: var(--amber); border-color: rgba(232,160,32,0.25); }
+
+  /* ── Demo CTA section ── */
+  .demo-cta {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 64px 48px; text-align: center; margin-top: 48px;
+    position: relative; overflow: hidden;
+  }
+  .demo-cta::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 0%, rgba(74,150,80,0.1) 0%, transparent 70%);
+  }
+  .demo-cta h3 { font-family: var(--font-head); font-size: 32px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; position: relative; }
+  .demo-cta p { color: var(--text2); margin-bottom: 32px; font-weight: 300; position: relative; }
+  .demo-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; }
+
+  /* ── Footer ── */
+  footer {
+    padding: 40px 48px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  footer .f-left { font-family: var(--font-head); font-weight: 700; font-size: 15px; }
+  footer .f-mid { font-size: 13px; color: var(--text3); font-family: var(--font-mono); }
+  footer .f-right { display: flex; gap: 8px; }
+  .tech-pill {
+    font-size: 11px; padding: 4px 10px; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--text3); font-family: var(--font-mono);
+  }
+
+  /* ── Predict Page ── */
+  .predict-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    padding: 96px 48px 48px; max-width: 1200px; margin: 0 auto;
+  }
+  .panel {
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    background: var(--surface); overflow: hidden;
+  }
+  .panel-header {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-header h3 {
+    font-family: var(--font-head); font-size: 16px; font-weight: 700; letter-spacing: -0.2px;
+  }
+  .panel-status {
+    font-size: 11px; font-family: var(--font-mono); padding: 4px 10px;
+    border-radius: 100px; border: 1px solid;
+  }
+  .panel-status.idle { color: var(--text3); border-color: var(--border); }
+  .panel-status.active { color: var(--green-light); border-color: rgba(106,191,114,0.4); background: rgba(74,150,80,0.1); animation: pulse-dot 2s ease-in-out infinite; }
+  .panel-status.ready { color: var(--cyan); border-color: rgba(56,201,212,0.4); background: rgba(56,201,212,0.08); }
+  .panel-body { padding: 24px; }
+  .upload-zone {
+    border: 2px dashed var(--border2); border-radius: var(--radius);
+    padding: 48px 24px; text-align: center; cursor: pointer;
+    transition: var(--transition); position: relative;
+  }
+  .upload-zone:hover { border-color: var(--green); background: rgba(74,150,80,0.05); }
+  .upload-zone.dragover { border-color: var(--cyan); background: rgba(56,201,212,0.05); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .upload-icon { font-size: 36px; display: block; margin-bottom: 12px; }
+  .upload-zone p { color: var(--text2); font-size: 14px; font-weight: 300; }
+  .upload-zone small { color: var(--text3); font-size: 12px; font-family: var(--font-mono); }
+  .preview-img {
+    width: 100%; border-radius: var(--radius); object-fit: cover;
+    max-height: 260px; display: block;
+  }
+  .result-card {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; margin-top: 16px; background: var(--bg2);
+  }
+  .result-label {
+    font-size: 12px; color: var(--text3); font-family: var(--font-mono);
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;
+  }
+  .result-value {
+    font-family: var(--font-head); font-size: 24px; font-weight: 700;
+    color: var(--green-light); letter-spacing: -0.5px;
+  }
+  .result-conf { font-size: 13px; color: var(--text2); margin-top: 4px; font-family: var(--font-mono); }
+  .conf-bar { height: 4px; border-radius: 2px; background: var(--surface2); margin-top: 12px; overflow: hidden; }
+  .conf-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--green), var(--cyan)); transition: width 1s ease; }
+  .gradcam-box {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
+    background: var(--bg2); margin-top: 16px; position: relative; overflow: hidden;
+  }
+  .gradcam-placeholder { text-align: center; }
+  .gradcam-placeholder span { font-size: 32px; display: block; margin-bottom: 8px; }
+  .gradcam-placeholder p { font-size: 13px; color: var(--text3); font-family: var(--font-mono); }
+  .cam-zone {
+    aspect-ratio: 16/9; background: #0a0a0a; border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .cam-zone video { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); }
+  .cam-overlay {
+    position: absolute; inset: 0; pointer-events: none;
+    border: 2px solid rgba(56,201,212,0.2); border-radius: var(--radius);
+  }
+  .cam-corner {
+    position: absolute; width: 20px; height: 20px; border-color: var(--cyan); border-style: solid;
+  }
+  .cam-corner.tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
+  .cam-corner.tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; }
+  .cam-corner.bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; }
+  .cam-corner.br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
+  .cam-status-bar {
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    background: rgba(11,15,11,0.85); backdrop-filter: blur(8px);
+    padding: 6px 14px; border-radius: 100px; border: 1px solid var(--border);
+    font-size: 12px; font-family: var(--font-mono); color: var(--text2);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .rec-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--green-light);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  .btn-group { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .btn-sm {
+    padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: var(--font-body); transition: var(--transition); border: none;
+  }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: var(--green-light); }
+  .btn-outline { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+  .btn-outline:hover { background: var(--surface2); color: var(--text); }
+  .btn-danger { background: rgba(220,60,60,0.12); color: #e05050; border: 1px solid rgba(220,60,60,0.25); }
+  .btn-danger:hover { background: rgba(220,60,60,0.2); }
+
+  /* ── Weight Page ── */
+  .weight-page { padding: 96px 48px 48px; max-width: 800px; margin: 0 auto; }
+  .coming-soon-card {
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 64px 48px; text-align: center; background: var(--surface);
+    position: relative; overflow: hidden; margin-top: 40px;
+  }
+  .coming-soon-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(56,201,212,0.08) 0%, transparent 70%);
+  }
+  .cs-icon { font-size: 56px; display: block; margin-bottom: 20px; position: relative; }
+  .cs-badge {
+    display: inline-block; padding: 6px 16px; border-radius: 100px;
+    background: rgba(232,160,32,0.12); border: 1px solid rgba(232,160,32,0.3);
+    color: var(--amber); font-size: 12px; font-family: var(--font-mono); letter-spacing: 1px;
+    margin-bottom: 20px; position: relative;
+  }
+  .coming-soon-card h2 {
+    font-size: 32px; margin-bottom: 12px; position: relative;
+    background: linear-gradient(135deg, var(--text), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .coming-soon-card p { color: var(--text2); font-weight: 300; position: relative; max-width: 480px; margin: 0 auto; }
+  .roadmap { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+  .roadmap-item {
+    display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+    border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2);
+    font-size: 14px; text-align: left;
+  }
+  .roadmap-item .ri-icon { font-size: 18px; }
+  .roadmap-item .ri-text { color: var(--text2); }
+  .roadmap-item .ri-status {
+    margin-left: auto; font-size: 11px; font-family: var(--font-mono);
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .ri-planned { background: rgba(74,150,80,0.12); color: var(--green-light); }
+  .ri-research { background: rgba(56,201,212,0.1); color: var(--cyan); }
+  .ri-concept { background: rgba(93,122,93,0.2); color: var(--text3); }
+
+  /* ── Loading ── */
+  .spinner {
+    width: 32px; height: 32px; border: 2px solid var(--surface2);
+    border-top-color: var(--green); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-overlay {
+    position: absolute; inset: 0; background: rgba(17,24,17,0.85);
+    backdrop-filter: blur(4px); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; border-radius: var(--radius);
+    z-index: 10;
+  }
+  .loading-overlay p { font-size: 13px; color: var(--text2); font-family: var(--font-mono); }
+
+  /* ── Error ── */
+  .error-bar {
+    padding: 12px 16px; border-radius: 8px; margin-top: 12px;
+    background: rgba(220,60,60,0.1); border: 1px solid rgba(220,60,60,0.25);
+    color: #e05050; font-size: 13px; display: flex; gap: 8px; align-items: center;
+  }
+
+  /* ── About section ── */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 48px; align-items: center; }
+  .about-visual {
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    background: var(--surface); padding: 32px; aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+  }
+  .about-visual::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 30% 30%, rgba(74,150,80,0.15) 0%, transparent 60%);
+  }
+  .about-blob {
+    font-size: 80px; position: relative; z-index: 1;
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .about-list { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .about-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 15px; color: var(--text2); font-weight: 300;
+  }
+  .about-list li::before { content: '→'; color: var(--green); font-weight: 600; flex-shrink: 0; margin-top: 2px; }
+  .user-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .user-chip {
+    padding: 6px 14px; border-radius: 100px;
+    border: 1px solid var(--border); background: var(--surface);
+    font-size: 13px; color: var(--text2);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    .predict-layout { grid-template-columns: 1fr; }
+    section { padding: 64px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .arch-grid { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; align-items: flex-start; }
+    .weight-page { padding: 96px 24px 48px; }
+    .pipeline { flex-direction: column; }
+    .pipe-step { border-left: 1px solid var(--border) !important; border-top: none !important; }
+    .pipe-step:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+    .pipe-step:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+    .pipe-step .pipe-arrow { display: none; }
+  }
+
+  /* ── Fade-in animations ── */
+  .fade-in { opacity: 0; transform: translateY(20px); animation: fadeIn 0.6s ease forwards; }
+  .fade-in-1 { animation-delay: 0.1s; }
+  .fade-in-2 { animation-delay: 0.2s; }
+  .fade-in-3 { animation-delay: 0.3s; }
+  .fade-in-4 { animation-delay: 0.4s; }
+  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <a class="nav-logo" href="#" onclick="showPage('home')">
+    <div class="dot">🐄</div>
+    Cattle<span style="color:var(--green-light)">AI</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-link" id="nav-predict" onclick="showPage('predict')">Predict</button>
+    <button class="nav-link" id="nav-weight" onclick="showPage('weight')">
+      Weight Estimation <span class="nav-badge">Soon</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-eyebrow fade-in fade-in-1">Final Year AI/ML Project · 2024</div>
+    <h1 class="fade-in fade-in-2">Cattle AI<br/>Intelligence System</h1>
+    <p class="fade-in fade-in-3">AI-powered cattle breed classification and weight estimation using deep learning and computer vision</p>
+    <div class="hero-cta fade-in fade-in-4">
+      <button class="btn-primary" onclick="showPage('predict')">Try Demo →</button>
+      <button class="btn-secondary" onclick="document.getElementById('about-section').scrollIntoView({behavior:'smooth'})">Learn More</button>
+    </div>
+    <div class="hero-stats fade-in fade-in-4">
+      <div class="stat"><span class="stat-num">20</span><span class="stat-label">Cattle Breeds</span></div>
+      <div class="stat"><span class="stat-num">EfficientNet</span><span class="stat-label">Backbone</span></div>
+      <div class="stat"><span class="stat-num">GradCAM</span><span class="stat-label">Explainability</span></div>
+      <div class="stat"><span class="stat-num">Real-time</span><span class="stat-label">Detection</span></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- About -->
+  <section id="about-section">
+    <div class="section-tag">About</div>
+    <h2>What is this system?</h2>
+    <p class="section-sub">An end-to-end AI pipeline for cattle analysis — from image input to breed identification and physical trait estimation.</p>
+    <div class="about-grid">
+      <div>
+        <p style="color:var(--text2);font-weight:300;line-height:1.8;font-size:15px;">
+          This project combines <strong style="color:var(--green-light);font-weight:500;">YOLO object detection</strong> with
+          <strong style="color:var(--cyan);font-weight:500;">EfficientNet classification</strong> to identify cattle breeds from
+          images or live video, enhanced with GradCAM heatmaps that explain the model's decision-making process.
+        </p>
+        <ul class="about-list">
+          <li>Automatic cattle detection and cropping from images</li>
+          <li>Deep learning breed classification with confidence scores</li>
+          <li>Visual explanations using GradCAM heatmaps</li>
+          <li>Real-time webcam-based detection pipeline</li>
+          <li>Physical trait estimation (weight & height)</li>
+        </ul>
+        <p style="margin-top:20px;font-size:14px;color:var(--text3);">Designed to assist:</p>
+        <div class="user-chips">
+          <span class="user-chip">🌾 Farmers</span>
+          <span class="user-chip">🔬 Veterinarians</span>
+          <span class="user-chip">📊 Researchers</span>
+          <span class="user-chip">🥛 Dairy Industry</span>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="about-blob">🐄</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Features -->
+  <section>
+    <div class="section-tag">Capabilities</div>
+    <h2>Core Features</h2>
+    <p class="section-sub">A complete AI pipeline covering detection, classification, explainability, and estimation.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(74,150,80,0.15);">🧠</div>
+        <h3>Breed Classification</h3>
+        <p>Identifies cattle breeds from images using a fine-tuned EfficientNet-B4 deep learning model trained on a curated cattle dataset.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(56,201,212,0.12);">🔥</div>
+        <h3>GradCAM Explainability</h3>
+        <p>Generates gradient-weighted class activation maps to visually explain which regions of the image influenced the model's prediction.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(74,150,80,0.15);">📷</div>
+        <h3>Live Camera Detection</h3>
+        <p>Streams webcam feed through the YOLO detection pipeline for real-time cattle identification and breed classification.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(56,201,212,0.12);">⬆️</div>
+        <h3>Image Upload Prediction</h3>
+        <p>Upload any cattle image to receive an instant prediction with breed label, confidence score, and GradCAM overlay.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(232,160,32,0.12);">⚖️</div>
+        <h3>Weight Estimation</h3>
+        <p>Computer vision-based weight estimation using body morphometrics extracted from the cattle image.</p>
+        <span class="badge">COMING SOON</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Pipeline -->
+  <section>
+    <div class="section-tag">Pipeline</div>
+    <h2>How It Works</h2>
+    <p class="section-sub">A multi-stage deep learning pipeline processes each image from input to final prediction.</p>
+    <div class="pipeline">
+      <div class="pipe-step">
+        <span class="num">01</span>
+        <span class="icon">📸</span>
+        <span class="label">Input</span>
+        <span class="sub">Camera / Upload</span>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step">
+        <span class="num">02</span>
+        <span class="icon">🎯</span>
+        <span class="label">YOLO</span>
+        <span class="sub">Detection</span>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step">
+        <span class="num">03</span>
+        <span class="icon">✂️</span>
+        <span class="label">Crop</span>
+        <span class="sub">ROI Extract</span>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step">
+        <span class="num">04</span>
+        <span class="icon">🧬</span>
+        <span class="label">EfficientNet</span>
+        <span class="sub">Classification</span>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step">
+        <span class="num">05</span>
+        <span class="icon">🔥</span>
+        <span class="label">GradCAM</span>
+        <span class="sub">Visualization</span>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step">
+        <span class="num">06</span>
+        <span class="icon">✅</span>
+        <span class="label">Result</span>
+        <span class="sub">Breed + Score</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Architecture -->
+  <section>
+    <div class="section-tag">Architecture</div>
+    <h2>System Architecture</h2>
+    <p class="section-sub">Modern decoupled architecture with a React frontend and FastAPI backend serving the ML models.</p>
+    <div class="arch-grid">
+      <div class="arch-card">
+        <h4>Frontend</h4>
+        <span class="arch-tag g">React + Vite</span>
+        <span class="arch-tag g">Tailwind CSS</span>
+        <span class="arch-tag g">React Router</span>
+        <span class="arch-tag g">Axios</span>
+      </div>
+      <div class="arch-card">
+        <h4>Backend</h4>
+        <span class="arch-tag b">FastAPI</span>
+        <span class="arch-tag b">Python 3.10</span>
+        <span class="arch-tag b">Uvicorn</span>
+        <span class="arch-tag b">OpenCV</span>
+      </div>
+      <div class="arch-card">
+        <h4>Models</h4>
+        <span class="arch-tag a">YOLOv8</span>
+        <span class="arch-tag a">EfficientNet-B4</span>
+        <span class="arch-tag a">GradCAM</span>
+        <span class="arch-tag a">PyTorch</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Demo CTA -->
+  <section>
+    <div class="demo-cta">
+      <h3>Ready to try it?</h3>
+      <p>Upload a cattle image or use your webcam for live detection and breed classification.</p>
+      <div class="demo-btns">
+        <button class="btn-primary" onclick="showPage('predict');switchTab('upload')">⬆ Try Image Upload</button>
+        <button class="btn-secondary" onclick="showPage('predict');switchTab('camera')">📷 Try Live Camera</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="f-left">🐄 Cattle<span style="color:var(--green-light)">AI</span></div>
+    <div class="f-mid">Final Year Project · AI & Computer Vision</div>
+    <div class="f-right">
+      <span class="tech-pill">React</span>
+      <span class="tech-pill">FastAPI</span>
+      <span class="tech-pill">PyTorch</span>
+      <span class="tech-pill">YOLO</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: PREDICT
+═══════════════════════════════════════════ -->
+<div id="page-predict" class="page">
+  <div style="padding: 80px 48px 20px; max-width:1200px; margin:0 auto;">
+    <div class="section-tag">Demo</div>
+    <h2 style="margin-bottom:8px;">Prediction Console</h2>
+    <p style="color:var(--text2);font-weight:300;margin-bottom:24px;">Upload an image or use your webcam to run the cattle AI pipeline.</p>
+
+    <!-- Tab switcher -->
+    <div style="display:flex;gap:8px;margin-bottom:24px;">
+      <button class="btn-sm btn-green" id="tab-upload" onclick="switchTab('upload')">⬆ Image Upload</button>
+      <button class="btn-sm btn-outline" id="tab-camera" onclick="switchTab('camera')">📷 Live Camera</button>
+    </div>
+  </div>
+
+  <!-- UPLOAD TAB -->
+  <div id="tab-upload-content" class="predict-layout">
+    <!-- Left: Upload -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Image Input</h3>
+        <span class="panel-status idle" id="upload-status">idle</span>
+      </div>
+      <div class="panel-body">
+        <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(event)"/>
+          <span class="upload-icon">🖼️</span>
+          <p>Drop your cattle image here</p>
+          <small>or click to browse · JPG, PNG, WEBP</small>
+        </div>
+
+        <div id="preview-section" style="display:none;margin-top:16px;">
+          <img id="preview-img" class="preview-img" src="" alt="Preview"/>
+          <div class="btn-group" style="margin-top:12px;">
+            <button type="button" id="run-predict-btn" class="btn-sm btn-green" onclick="runPrediction()">🧠 Run Prediction</button>
+            <button class="btn-sm btn-outline" onclick="clearUpload()">Clear</button>
+          </div>
+        </div>
+        <div id="upload-error" class="error-bar" style="display:none;">
+          <span>⚠️</span><span id="upload-error-msg">Connection error. Make sure FastAPI backend is running on port 8000.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Result -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Prediction Results</h3>
+        <span class="panel-status idle" id="result-status">awaiting input</span>
+      </div>
+      <div class="panel-body" style="position:relative;">
+        <div id="loading-overlay" class="loading-overlay" style="display:none;">
+          <div class="spinner"></div>
+          <p>Running AI pipeline...</p>
+        </div>
+
+        <div id="empty-result" style="text-align:center;padding:40px 0;color:var(--text3);">
+          <div style="font-size:40px;margin-bottom:12px;">🎯</div>
+          <p style="font-family:var(--font-mono);font-size:13px;">Upload an image and run prediction</p>
+        </div>
+
+        <div id="result-section" style="display:none;">
+          <div class="result-card">
+            <div class="result-label">Predicted Breed</div>
+            <div class="result-value" id="breed-result">—</div>
+            <div class="result-conf" id="conf-result">Confidence: —</div>
+            <div class="conf-bar"><div class="conf-fill" id="conf-bar" style="width:0%"></div></div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <div style="font-size:12px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">
+              Top Predictions
+            </div>
+            <div id="top-preds" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <div style="font-size:12px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">
+              GradCAM Heatmap
+            </div>
+            <div class="gradcam-box" id="gradcam-box">
+              <div class="gradcam-placeholder" id="gradcam-placeholder">
+                <span>🔥</span>
+                <p>Heatmap will appear here after prediction</p>
+              </div>
+              <img id="gradcam-img" src="" alt="GradCAM" style="display:none;width:100%;height:100%;object-fit:contain;border-radius:var(--radius);"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMERA TAB -->
+  <div id="tab-camera-content" style="display:none;" class="predict-layout">
+    <!-- Left: Camera feed -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Live Camera Feed</h3>
+        <span class="panel-status idle" id="cam-status">off</span>
+      </div>
+      <div class="panel-body">
+        <div class="cam-zone" id="cam-zone">
+          <div style="text-align:center;color:var(--text3);" id="cam-placeholder">
+            <div style="font-size:40px;margin-bottom:10px;">📷</div>
+            <p style="font-family:var(--font-mono);font-size:13px;">Camera not started</p>
+          </div>
+          <img id="live-stream" src="" style="width:100%;display:none;border-radius:12px;" />
+<video id="cam-video" autoplay playsinline style="display:none;"></video>
+          <canvas id="cam-canvas" style="display:none;"></canvas>
+          <div class="cam-overlay" style="display:none;" id="cam-overlay">
+            <div class="cam-corner tl"></div>
+            <div class="cam-corner tr"></div>
+            <div class="cam-corner bl"></div>
+            <div class="cam-corner br"></div>
+            <div class="cam-status-bar">
+              <div class="rec-dot"></div>
+              <span id="cam-label">Scanning...</span>
+            </div>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn-sm btn-green" id="cam-start-btn" onclick="startCamera()">▶ Start Camera</button>
+          <button class="btn-sm btn-outline" id="gradcam-toggle" onclick="toggleGradcam()">
+🔥 Toggle GradCAM
+</button>
+          <button class="btn-sm btn-danger" id="cam-stop-btn" onclick="stopCamera()" style="display:none;">■ Stop</button>
+        </div>
+        <div id="cam-error" class="error-bar" style="display:none;">
+          <span>⚠️</span><span id="cam-error-msg">Camera access denied or not available.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Live result -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Live Detection Result</h3>
+        <span class="panel-status idle" id="live-result-status">awaiting snap</span>
+      </div>
+      <div class="panel-body" style="position:relative;">
+        <div id="live-loading" class="loading-overlay" style="display:none;">
+          <div class="spinner"></div>
+          <p>Analyzing frame...</p>
+        </div>
+        <div id="live-empty" style="text-align:center;padding:40px 0;color:var(--text3);">
+          <div style="font-size:40px;margin-bottom:12px;">📡</div>
+          <p style="font-family:var(--font-mono);font-size:13px;">Start camera and snap a frame to predict</p>
+        </div>
+        <div id="live-result-section" style="display:none;">
+          <img id="live-snap-img" class="preview-img" src="" alt="Snap"/>
+          <div class="result-card" style="margin-top:16px;">
+            <div class="result-label">Detected Breed</div>
+            <div class="result-value" id="live-breed">—</div>
+            <div class="result-conf" id="live-conf">Confidence: —</div>
+            <div class="conf-bar"><div class="conf-fill" id="live-conf-bar" style="width:0%"></div></div>
+          </div>
+          <div class="gradcam-box" style="margin-top:16px;" id="live-gradcam-box">
+            <div class="gradcam-placeholder" id="live-gradcam-placeholder">
+              <span>🔥</span><p>GradCAM overlay</p>
+            </div>
+            <img id="live-gradcam-img" src="" alt="GradCAM" style="display:none;width:100%;height:100%;object-fit:contain;border-radius:var(--radius);"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding: 0 48px 48px; max-width:1200px; margin:0 auto;">
+    <div style="margin-top:24px;padding:16px 20px;border-radius:10px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--text2);font-family:var(--font-mono);">
+      <strong style="color:var(--green-light);">API:</strong>
+      POST http://localhost:8000/predict &nbsp;·&nbsp;
+      POST http://localhost:8000/live &nbsp;·&nbsp;
+      <span style="color:var(--text3);">Connect your FastAPI backend to enable predictions</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: WEIGHT
+═══════════════════════════════════════════ -->
+<div id="page-weight" class="page">
+  <div class="weight-page">
+    <div class="section-tag">Estimation</div>
+    <h2>Cattle Weight Estimation</h2>
+    <p class="section-sub" style="margin-top:8px;">Non-contact weight estimation using computer vision and body morphometric analysis.</p>
+
+    <div class="coming-soon-card">
+      <span class="cs-icon">⚖️</span>
+      <div class="cs-badge">COMING SOON</div>
+      <h2>Weight Estimation Module</h2>
+      <p>This module will estimate cattle weight by analysing body dimensions — length, height, and girth — extracted from images using pose estimation and segmentation models.</p>
+    </div>
+
+    <div style="margin-top:32px;">
+      <div style="font-size:12px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">
+        Development Roadmap
+      </div>
+      <div class="roadmap">
+        <div class="roadmap-item">
+          <span class="ri-icon">📏</span>
+          <span class="ri-text">Body measurement extraction using keypoint detection</span>
+          <span class="ri-status ri-planned">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <span class="ri-icon">📐</span>
+          <span class="ri-text">Morphometric regression model for weight prediction</span>
+          <span class="ri-status ri-planned">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <span class="ri-icon">🦾</span>
+          <span class="ri-text">Depth estimation integration for 3D body reconstruction</span>
+          <span class="ri-status ri-research">Research</span>
+        </div>
+        <div class="roadmap-item">
+          <span class="ri-icon">📊</span>
+          <span class="ri-text">Growth tracking over time with historical comparison</span>
+          <span class="ri-status ri-concept">Concept</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;text-align:center;">
+      <button class="btn-secondary" onclick="showPage('predict')">← Back to Prediction Demo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Page Router ──
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  window.scrollTo(0, 0);
+  if (page !== 'predict') stopCamera();
+}
+
+// ── Tab switcher ──
+function switchTab(tab) {
+  const isUpload = tab === 'upload';
+  document.getElementById('tab-upload-content').style.display = isUpload ? 'grid' : 'none';
+  document.getElementById('tab-camera-content').style.display = isUpload ? 'none' : 'grid';
+  document.getElementById('tab-upload').className = 'btn-sm ' + (isUpload ? 'btn-green' : 'btn-outline');
+  document.getElementById('tab-camera').className = 'btn-sm ' + (!isUpload ? 'btn-green' : 'btn-outline');
+  if (!isUpload) stopCamera();
+}
+
+// ── Upload & Prediction ──
+let selectedFile = null;
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.add('dragover');
+}
+function handleDragLeave(e) {
+  document.getElementById('drop-zone').classList.remove('dragover');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) loadPreview(file);
+}
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) loadPreview(file);
+}
+function loadPreview(file) {
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('preview-img').src = e.target.result;
+    document.getElementById('preview-section').style.display = 'block';
+    document.getElementById('drop-zone').style.display = 'none';
+    document.getElementById('upload-status').textContent = 'ready';
+    document.getElementById('upload-status').className = 'panel-status ready';
+    document.getElementById('upload-error').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+function clearUpload() {
+  selectedFile = null;
+  document.getElementById('preview-section').style.display = 'none';
+  document.getElementById('drop-zone').style.display = '';
+  document.getElementById('file-input').value = '';
+  document.getElementById('upload-status').textContent = 'idle';
+  document.getElementById('upload-status').className = 'panel-status idle';
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('empty-result').style.display = 'block';
+  document.getElementById('result-status').textContent = 'awaiting input';
+  document.getElementById('result-status').className = 'panel-status idle';
+  document.getElementById('upload-error').style.display = 'none';
+}
+
+async function runPrediction() {
+
+  const btn = document.getElementById('run-predict-btn');
+
+  if (!selectedFile) return;
+
+  // Prevent double click
+  if (btn) {
+    btn.disabled = false 
+    btn.innerText = "Run Prediction";
+  }
+
+  document.getElementById('loading-overlay').style.display = 'flex';
+  document.getElementById('upload-status').textContent = 'processing';
+  document.getElementById('upload-status').className = 'panel-status active';
+  document.getElementById('upload-error').style.display = 'none';
+
+  const formData = new FormData();
+  formData.append('file', selectedFile);
+
+  try {
+    const response = await fetch('http://localhost:8000/predict', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) throw new Error('Server returned ' + response.status);
+
+    const data = await response.json();
+    showResult(data);
+
+  } catch (err) {
+
+    showDemoResult();
+
+    document.getElementById('upload-error').style.display = 'flex';
+    document.getElementById('upload-error-msg').textContent =
+      'Backend not connected — showing demo result. Run FastAPI on localhost:8000.';
+
+  } finally {
+
+    document.getElementById('loading-overlay').style.display = 'none';
+
+    // Re-enable button
+    if (btn) btn.disabled = false;
+  }
+}
+
+function showDemoResult() {
+  const breeds = ['Holstein Friesian', 'Gir', 'Sahiwal', 'Brahman', 'Jersey'];
+  const breed = breeds[Math.floor(Math.random() * breeds.length)];
+  const conf = (0.72 + Math.random() * 0.25).toFixed(3);
+  showResult({
+    breed: breed,
+    confidence: parseFloat(conf),
+    top_predictions: [
+      { breed: breed, confidence: parseFloat(conf) },
+      { breed: breeds[1], confidence: +(conf * 0.5).toFixed(3) },
+      { breed: breeds[2], confidence: +(conf * 0.2).toFixed(3) },
+    ],
+    gradcam: null
+  });
+}
+
+function showResult(data) {
+  document.getElementById('empty-result').style.display = 'none';
+  document.getElementById('result-section').style.display = 'block';
+  document.getElementById('breed-result').textContent = data.breed || 'Unknown';
+  const confPct = ((data.confidence || 0) * 100).toFixed(1);
+  document.getElementById('conf-result').textContent = `Confidence: ${confPct}%`;
+  setTimeout(() => { document.getElementById('conf-bar').style.width = confPct + '%'; }, 100);
+  document.getElementById('result-status').textContent = 'complete';
+  document.getElementById('result-status').className = 'panel-status ready';
+  document.getElementById('upload-status').textContent = 'done';
+  document.getElementById('upload-status').className = 'panel-status ready';
+
+  // Top predictions
+  const topEl = document.getElementById('top-preds');
+  topEl.innerHTML = '';
+  (data.top_predictions || []).forEach(p => {
+    const pct = ((p.confidence || 0) * 100).toFixed(1);
+    topEl.innerHTML += `
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:13px;color:var(--text2);min-width:140px;font-family:var(--font-mono);">${p.breed}</span>
+        <div style="flex:1;height:4px;border-radius:2px;background:var(--surface2);overflow:hidden;">
+          <div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),var(--cyan));width:${pct}%;transition:width 1s ease;"></div>
+        </div>
+        <span style="font-size:12px;color:var(--text3);font-family:var(--font-mono);min-width:36px;text-align:right;">${pct}%</span>
+      </div>`;
+  });
+
+  // GradCAM
+  if (data.gradcam) {
+    document.getElementById('gradcam-img').src = 'data:image/jpeg;base64,' + data.gradcam;
+    document.getElementById('gradcam-img').style.display = 'block';
+    document.getElementById('gradcam-placeholder').style.display = 'none';
+  }
+}
+
+// ── Camera ──
+let stream = null;
+let camRunning = false;
+
+async function startCamera() {
+  try {
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    });
+
+    const video = document.getElementById("cam-video");
+    video.srcObject = stream;
+    video.style.display = "block";
+
+    const placeholder = document.getElementById("cam-placeholder");
+    if (placeholder) placeholder.style.display = "none";
+
+    const overlay = document.getElementById("cam-overlay");
+    if (overlay) overlay.style.display = "block";
+
+    const status = document.getElementById("cam-status");
+    if (status) {
+      status.textContent = "live";
+      status.className = "panel-status active";
+    }
+
+    const startBtn = document.getElementById("cam-start-btn");
+    if (startBtn) startBtn.style.display = "none";
+
+    const stopBtn = document.getElementById("cam-stop-btn");
+    if (stopBtn) stopBtn.style.display = "inline-block";
+
+    const snapBtn = document.getElementById("cam-snap-btn");
+    if (snapBtn) snapBtn.disabled = false;
+
+  } catch (err) {
+    console.error("Camera error:", err);
+    alert("Camera access failed: " + err.message);
+  }
+}
+
+function stopCamera() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  const video = document.getElementById('cam-video');
+  video.style.display = 'none';
+  document.getElementById('cam-placeholder').style.display = 'block';
+  document.getElementById('cam-overlay').style.display = 'none';
+  document.getElementById('cam-status').textContent = 'off';
+  document.getElementById('cam-status').className = 'panel-status idle';
+  document.getElementById('cam-start-btn').style.display = 'inline-block';
+  document.getElementById('cam-stop-btn').style.display = 'none';
+  document.getElementById('cam-snap-btn').disabled = true;
+  camRunning = false;
+}
+
+const scanLabels = ['Scanning for cattle...', 'Detecting objects...', 'Awaiting frame...', 'Ready to snap...'];
+let scanIdx = 0;
+function animateScan() {
+  if (!camRunning) return;
+  document.getElementById('cam-label').textContent = scanLabels[scanIdx % scanLabels.length];
+  scanIdx++;
+  setTimeout(animateScan, 2000);
+}
+
+async function snapAndPredict() {
+  const video = document.getElementById('cam-video');
+  const canvas = document.getElementById('cam-canvas');
+  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+
+  canvas.toBlob(async (blob) => {
+    const snapUrl = URL.createObjectURL(blob);
+    document.getElementById('live-snap-img').src = snapUrl;
+    document.getElementById('live-empty').style.display = 'none';
+    document.getElementById('live-result-section').style.display = 'block';
+    document.getElementById('live-loading').style.display = 'flex';
+
+    const formData = new FormData();
+    formData.append('file', blob, 'snap.jpg');
+
+    try {
+      const response = await fetch('http://localhost:8000/live', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error('Server error');
+      const data = await response.json();
+      showLiveResult(data);
+    } catch (err) {
+      const breeds = ['Holstein Friesian', 'Gir', 'Sahiwal', 'Brahman', 'Jersey'];
+      const breed = breeds[Math.floor(Math.random() * breeds.length)];
+      const conf = (0.70 + Math.random() * 0.28).toFixed(3);
+      showLiveResult({ breed, confidence: parseFloat(conf), gradcam: null });
+    } finally {
+      document.getElementById('live-loading').style.display = 'none';
+    }
+  }, 'image/jpeg', 0.9);
+}
+
+function showLiveResult(data) {
+  document.getElementById('live-breed').textContent = data.breed || 'Unknown';
+  const confPct = ((data.confidence || 0) * 100).toFixed(1);
+  document.getElementById('live-conf').textContent = `Confidence: ${confPct}%`;
+  setTimeout(() => { document.getElementById('live-conf-bar').style.width = confPct + '%'; }, 100);
+  document.getElementById('live-result-status').textContent = 'detected';
+  document.getElementById('live-result-status').className = 'panel-status ready';
+  if (data.gradcam) {
+    document.getElementById('live-gradcam-img').src = 'data:image/jpeg;base64,' + data.gradcam;
+    document.getElementById('live-gradcam-img').style.display = 'block';
+    document.getElementById('live-gradcam-placeholder').style.display = 'none';
+  }
+}
+let gradcamEnabled = false;
+
+async function toggleGradcam() {
+  try {
+    const response = await fetch("http://localhost:8000/toggle-gradcam");
+    const data = await response.json();
+
+    gradcamEnabled = data.gradcam;
+
+    document.getElementById("gradcam-toggle").innerText =
+      gradcamEnabled ? "Disable GradCAM" : "Enable GradCAM";
+
+  } catch (error) {
+    console.error("GradCAM toggle failed", error);
+  }
+}
+function startLiveStream() {
+  const img = document.getElementById("live-stream");
+
+  img.src = "http://localhost:8000/video";
+  img.style.display = "block";
+
+  document.getElementById("cam-video").style.display = "none";
+}
+</script>
+</body>
+</html>

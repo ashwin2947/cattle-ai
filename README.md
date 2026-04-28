@@ -1,31 +1,16 @@
-# 🐄 Cattle AI Intelligence System
+# React + Vite
 
-A computer vision-based system for **cattle breed classification** and **weight estimation** using deep learning and image analysis.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
----
+Currently, two official plugins are available:
 
-## 🚀 Overview
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-The **Cattle AI Intelligence System** is a modular deep learning framework designed to analyze cattle images and perform:
+## React Compiler
 
-- 🧬 **Breed Classification**
-- ⚖️ **Weight Estimation**
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-The system eliminates the need for manual measurements by using **standard RGB images**, making it practical for real-world farm environments.
+## Expanding the ESLint configuration
 
----
-
-## 🧠 Key Features
-
-- 📸 Image-based (non-invasive)
-- 🔍 YOLO-based cattle detection
-- 🧩 Modular architecture (separate pipelines for each task)
-- 📏 Keypoint-based feature extraction
-- ⚖️ Hybrid weight estimation (Deep Learning + XGBoost)
-- 🐄 CNN-based breed classification
-- ⚡ API-based backend using FastAPI
-- 💻 Deployable on standard hardware
-
----
-
-## 🏗️ System Architecture
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

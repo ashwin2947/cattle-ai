@@ -1,0 +1,1 @@
+classes = ['Deoni', 'Gangatari', 'Gir', 'Hariana', 'Himachali Pahari', 'Kangayam', 'Kankrej', 'Khillari', 'Mewati', 'Nagori', 'Nimari', 'Ongole', 'Ponwar', 'Purnea', 'Rathi', 'Red Kandhari', 'Red Sindhi', 'Sahiwal', 'Siri', 'Tharparkar','Uncertain']
